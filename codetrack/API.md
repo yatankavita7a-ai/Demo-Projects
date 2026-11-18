@@ -105,9 +105,9 @@ returns the cached data. Invalid URL/username → `400` with a helpful message.
 
 `GET /college/overview` →
 ```json
-{ "college": "IIT Delhi", "studentCount": 42, "activeCount": 30, "totalSolved": 12000, "averageSolved": 285,
+{ "college": "IIT Delhi", "studentCount": 42, "activeCount": 30,
   "platformAdoption": { "LEETCODE": 35, "CODEFORCES": 20, "CODECHEF": 10, "GEEKSFORGEEKS": 25, "GITHUB": 28 },
-  "distribution": { "0": 12, "1-50": 5, "51-200": 10, "201-500": 9, "500+": 6 },
+  "distribution": { "0": 2, "1-100": 5, "101-500": 12, "501-1000": 15, "1000+": 8 },
   "topStudents": LeaderboardEntry[] }
 ```
 Returns `400` if the college account hasn't set a college name.

@@ -1232,7 +1232,7 @@ async function renderCollege(seq) {
   const adoption = PLATFORMS.map((p) => ({
     label: p.name, value: (d.platformAdoption || {})[p.key] ?? 0, color: p.color, iconHtml: platformDot(p.key),
   }));
-  const distOrder = ['0', '1-50', '51-200', '201-500', '500+'];
+  const distOrder = ['0', '1-100', '101-500', '501-1000', '1000+'];
   const dist = d.distribution || {};
   const distKeys = [...distOrder.filter((k) => k in dist), ...Object.keys(dist).filter((k) => !distOrder.includes(k))];
   const distItems = distKeys.map((k) => ({ label: `${k} solved`, value: dist[k] }));
@@ -1244,8 +1244,6 @@ async function renderCollege(seq) {
     <div class="stats">
       ${statCard('Students', fmt(d.studentCount), 'With public profiles', 'users')}
       ${statCard('Active', fmt(d.activeCount), activePct != null ? `${activePct}% of students` : '', 'check')}
-      ${statCard('Total solved', fmt(d.totalSolved), 'Across all students', 'code')}
-      ${statCard('Average solved', fmt(d.averageSolved != null ? Math.round(d.averageSolved) : null), 'Per student', 'chart')}
     </div>
     <div class="grid grid-2" style="margin-top:16px">
       <section class="card"><h2 class="card-title">Platform adoption <span class="card-sub">students connected</span></h2>${barsBlock(adoption)}</section>

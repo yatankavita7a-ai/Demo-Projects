@@ -99,6 +99,7 @@ public class PlatformService {
         List<PlatformProfile> all = profileRepository.findAll();
         log.info("Scheduled sync of {} platform profiles", all.size());
         for (PlatformProfile p : all) {
+            if (p.isDemo()) continue;
             try {
                 syncProfile(p);
                 Thread.sleep(1000); // be polite to the platforms
@@ -112,6 +113,7 @@ public class PlatformService {
     }
 
     private PlatformProfile syncIfStale(PlatformProfile profile) {
+        if (profile.isDemo()) return profile;
         Instant last = profile.getLastAttemptAt();
         if (last != null && last.isAfter(Instant.now().minus(RESYNC_COOLDOWN))) return profile;
         return syncProfile(profile);

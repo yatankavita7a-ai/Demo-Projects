@@ -48,6 +48,9 @@ public class PlatformProfile {
     private Instant lastSyncedAt;
     private Instant lastAttemptAt;
 
+    /** Sample data created by DemoDataSeeder; never synced against the real platform. */
+    private Boolean demo;
+
     protected PlatformProfile() {}
 
     public PlatformProfile(User user, Platform platform, String username) {
@@ -59,6 +62,7 @@ public class PlatformProfile {
     /** Points a profile at a new username and clears stale stats. */
     public void changeUsername(String username) {
         this.username = username;
+        this.demo = null;
         applyStats(new PlatformStats(null, null, null, null, null, null, null, null, null, null, null, null, null));
         this.syncStatus = SyncStatus.PENDING;
         this.syncMessage = null;
@@ -94,6 +98,9 @@ public class PlatformProfile {
         syncMessage = message;
         lastAttemptAt = now;
     }
+
+    public boolean isDemo() { return demo != null && demo; }
+    public void markDemo() { this.demo = true; }
 
     public Long getId() { return id; }
     public User getUser() { return user; }

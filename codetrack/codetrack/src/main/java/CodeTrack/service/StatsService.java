@@ -135,17 +135,15 @@ public class StatsService {
         Map<Platform, Integer> adoption = new EnumMap<>(Platform.class);
         for (Platform p : Platform.values()) adoption.put(p, 0);
         Map<String, Integer> distribution = new LinkedHashMap<>();
-        for (String b : List.of("0", "1-50", "51-200", "201-500", "500+")) distribution.put(b, 0);
+        for (String b : List.of("0", "1-100", "101-500", "501-1000", "1000+")) distribution.put(b, 0);
 
-        int total = 0, active = 0;
+        int active = 0;
         for (StudentStats s : students) {
-            total += s.totalSolved();
             if (!s.profiles().isEmpty()) active++;
             s.profiles().forEach(p -> adoption.merge(p.getPlatform(), 1, Integer::sum));
             distribution.merge(bucket(s.totalSolved()), 1, Integer::sum);
         }
-        int avg = students.isEmpty() ? 0 : Math.round((float) total / students.size());
-        return new CollegeOverviewDto(me.getCollege(), students.size(), active, total, avg, adoption, distribution,
+        return new CollegeOverviewDto(me.getCollege(), students.size(), active, adoption, distribution,
                 toEntries(students, 10, collegeUserId));
     }
 
@@ -208,10 +206,10 @@ public class StatsService {
 
     private static String bucket(int solved) {
         if (solved == 0) return "0";
-        if (solved <= 50) return "1-50";
-        if (solved <= 200) return "51-200";
-        if (solved <= 500) return "201-500";
-        return "500+";
+        if (solved <= 100) return "1-100";
+        if (solved <= 500) return "101-500";
+        if (solved <= 1000) return "501-1000";
+        return "1000+";
     }
 
     private static boolean sameCollege(String a, String b) {

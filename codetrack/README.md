@@ -34,6 +34,18 @@ cd codetrack
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
+The `dev` profile also creates **demo accounts** on first start, so every page has data. All use the
+password `demo1234`:
+
+| Account | Email |
+|---|---|
+| 30 students (6 per institute, 120 to 2,000 problems solved each) | e.g. `aarav.sharma@codetrack.demo`, `arjun.reddy@codetrack.demo` |
+| Institutes: IIT Delhi, NIT Trichy, BITS Pilani, DTU, VIT Vellore | `placements.iitdelhi@codetrack.demo`, `placements.nittrichy@codetrack.demo`, `placements.bitspilani@codetrack.demo`, `placements.dtu@codetrack.demo`, `placements.vit@codetrack.demo` |
+| Recruiter | `recruiter@codetrack.demo` |
+
+Demo stats are generated and are never synced against the real platforms. To start over, stop the
+app and delete `codetrack/data/`.
+
 If `java` isn't on your PATH (Homebrew OpenJDK), set `JAVA_HOME` first, e.g.
 `export JAVA_HOME=$(/usr/libexec/java_home 2>/dev/null || echo /opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home)`.
 
