@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniConnect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1020;--sidebar:#10172a;--card:#151d32;--card2:#1a2440;--border:#273250;
+  --text:#eef2ff;--muted:#8e9ab7;--primary:#6366f1;--primary2:#818cf8;
+  --success:#34d399;--warning:#fbbf24;--danger:#fb7185;--cyan:#38bdf8;
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:Inter,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit} button{cursor:pointer} button:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--primary2);outline-offset:2px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:255px;background:linear-gradient(180deg,#11182d,#0d1426);border-right:1px solid var(--border);padding:24px 14px;position:fixed;inset:0 auto 0 0;z-index:20;display:flex;flex-direction:column}
+.logo{display:flex;gap:12px;align-items:center;padding:4px 10px 24px;border-bottom:1px solid var(--border)}
+.logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#8b5cf6);display:grid;place-items:center;font-weight:800;font-size:20px;box-shadow:0 10px 25px #6366f133;flex:none}
+.logo h1{font:800 18px "Plus Jakarta Sans";margin:0}.logo small{color:var(--muted);font-size:11px}
+.nav{margin-top:22px;flex:1;overflow-y:auto}.nav button{width:100%;border:0;background:transparent;color:var(--muted);padding:12px 14px;border-radius:11px;text-align:left;margin:3px 0;display:flex;gap:12px;align-items:center}
+.nav button:hover,.nav button.active{background:#1b2540;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--primary)}
+.nav .ico{width:22px;text-align:center}.nav .count{margin-left:auto;background:#30234d;color:#c4b5fd;border-radius:999px;font-size:10px;font-weight:700;padding:2px 7px}
+.rolebox{padding:13px;border:1px solid var(--border);border-radius:13px;background:#151d32;margin-top:12px}
+.rolebox label{font-size:10px;color:var(--muted);display:block;margin-bottom:6px}.rolebox select,.role-mobile{width:100%;background:#0d1426;color:#fff;border:1px solid var(--border);border-radius:8px;padding:8px}
+.rolebox .reset{margin-top:9px;width:100%;background:transparent;border:0;color:var(--muted);font-size:10px;text-decoration:underline}
+.role-mobile{display:none;width:auto;font-size:12px;padding:7px}
+.main{margin-left:255px;width:calc(100% - 255px);padding:0 34px 50px}
+.topbar{height:76px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:10;background:#0b1020dd;backdrop-filter:blur(14px);border-bottom:1px solid #1d2740}
+.search{display:flex;align-items:center;gap:9px;background:#121a2e;border:1px solid var(--border);border-radius:10px;padding:9px 12px;width:min(390px,45vw)}
+.search input{border:0;outline:0;background:transparent;color:#fff;width:100%}.search span{color:var(--muted)}
+.search .clear-search{border:0;background:transparent;color:var(--muted);padding:0 2px;display:none}.search.has-q .clear-search{display:block}
+.profile{display:flex;align-items:center;gap:11px}.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#818cf8,#38bdf8);display:grid;place-items:center;font-weight:800;color:#07101f;flex:none}.profile b{font-size:13px}.profile small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.module{display:none;padding-top:30px}.module.active{display:block}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:25px}.hero h2{font:800 29px "Plus Jakarta Sans";margin:0 0 7px}.hero p{margin:0;color:var(--muted);max-width:700px;line-height:1.55}
+.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,1fr)}.two{grid-template-columns:1.25fr .75fr}.three{grid-template-columns:repeat(3,1fr)}
+.card{background:linear-gradient(180deg,#151d32,#131b2e);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 12px 30px #00000018;min-width:0}
+.stat{min-height:122px;text-align:left;color:inherit;width:100%}.stat:hover{border-color:#3a4870}.stat .label{color:var(--muted);font-size:12px}.stat .num{font:800 28px "Plus Jakarta Sans";margin:12px 0 5px}.stat .hint{font-size:11px;color:var(--muted)}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 14px}.section-title h3{font:700 16px "Plus Jakarta Sans";margin:0}.section-title span{color:var(--muted);font-size:11px}
+.item{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid #222d48}.item:last-child{border-bottom:0}.item h4{margin:0 0 5px;font-size:13px}.item p{margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+.item .actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex:none}
+.tag{display:inline-block;border-radius:6px;padding:4px 7px;font-size:10px;font-weight:700;margin-right:6px;background:#252e4b;color:#b9c3dd}.tag.blue{background:#172f49;color:#67c8fa}.tag.green{background:#12382f;color:#63e6be}.tag.yellow{background:#3b3014;color:#fcd34d}.tag.red{background:#401d2a;color:#fda4af}.tag.purple{background:#30234d;color:#c4b5fd}
+.btn{border:1px solid var(--border);background:#11192d;color:#dce4ff;border-radius:9px;padding:8px 12px;font-size:11px;white-space:nowrap}.btn:hover{border-color:#56648c}.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}.btn.success{background:#12382f;border-color:#1e6b58;color:#72efc5}.btn.danger{background:#401d2a;border-color:#6b2a3d;color:#fda4af}
+form.card{margin-bottom:18px}.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}.field label{display:block;color:var(--muted);font-size:10px;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;background:#0d1426;border:1px solid var(--border);color:#fff;border-radius:9px;padding:10px;outline:0}.field textarea{min-height:85px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary)}
+.field input[type=file]{padding:8px;color:var(--muted)}.field .help{color:var(--muted);font-size:10px;margin-top:5px}
+.notice{padding:12px 14px;border-radius:11px;background:#171f35;border:1px solid var(--border);color:#b7c3df;font-size:11px;line-height:1.5;margin-bottom:16px}
+.notice strong{color:#fff}.empty{text-align:center;color:var(--muted);font-size:12px;padding:22px}
+.prof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.prof{padding:17px;border:1px solid var(--border);border-radius:14px;background:#141d32}.prof .avatar{width:44px;height:44px;float:left;margin-right:11px}.prof h4{margin:3px 0 3px;font-size:13px}.prof small{color:var(--muted)}.clear{clear:both}.slots{margin-top:14px;display:flex;flex-wrap:wrap;gap:7px}.slot{border:1px solid #28475a;background:#102b32;color:#68e0c0;border-radius:7px;padding:6px 8px;font-size:10px}.slot:hover:not(:disabled){border-color:#3fa58c}.slot.booked{border-color:#4d2936;background:#291824;color:#fb9aaa}
+.slot-form{display:flex;gap:6px;margin-top:12px}.slot-form input{flex:1;min-width:0;background:#0d1426;border:1px solid var(--border);color:#fff;border-radius:8px;padding:7px;font-size:11px}
+.update{border-left:3px solid var(--primary)}.update.manager{border-left-color:var(--warning)}.update.professor{border-left-color:var(--cyan)}
+.assignment{position:relative}.assignment .status{position:absolute;right:18px;top:18px;margin:0}.assignment h4{padding-right:80px}
+.filebox{margin-top:13px;padding:10px;border:1px solid var(--border);border-radius:9px;background:#0d1426;display:flex;justify-content:space-between;align-items:center;gap:10px}.filebox b{font-size:11px}.filebox p{color:var(--muted);font-size:11px;margin:4px 0 0;word-break:break-all}
+.toast{position:fixed;right:25px;bottom:25px;background:#1b2540;border:1px solid var(--border);padding:12px 15px;border-radius:10px;font-size:12px;opacity:0;transform:translateY(10px);transition:.25s;z-index:100;pointer-events:none;max-width:calc(100vw - 50px)}.toast.show{opacity:1;transform:none}.toast.error{border-color:#6b2a3d;color:#fda4af}
+.modal{position:fixed;inset:0;background:#020617aa;display:none;place-items:center;z-index:80;padding:20px}.modal.show{display:grid}.modal .card{width:min(520px,100%)}
+mark{background:#6366f155;color:#fff;border-radius:3px;padding:0 1px}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.three,.prof-grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
+@media(max-width:760px){.sidebar{width:74px;padding:18px 9px}.logo{padding:3px 6px 18px}.logo div:not(.logo-icon),.nav button span:not(.ico),.rolebox{display:none}.nav button{justify-content:center;padding:12px 0}.main{margin-left:74px;width:calc(100% - 74px);padding:0 14px 40px}.topbar{height:68px}.search{width:auto;flex:1}.profile>div:first-child{display:none}.role-mobile{display:block}.fields,.three,.prof-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.hero{align-items:flex-start;flex-direction:column;gap:12px}.hero h2{font-size:24px}.item{flex-direction:column}.item .actions{justify-content:flex-start}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo"><div class="logo-icon">UC</div><div><h1>UniConnect</h1><small>Campus Toolkit</small></div></div>
+  <nav class="nav" id="nav" aria-label="Main">
+    <button class="active" data-page="dashboard" title="Dashboard"><span class="ico">⌂</span><span>Dashboard</span></button>
+    <button data-page="deadlines" title="Deadlines"><span class="ico">✓</span><span>Deadlines</span></button>
+    <button data-page="notes" title="Notes Exchange"><span class="ico">▤</span><span>Notes Exchange</span></button>
+    <button data-page="appointments" title="Appointments"><span class="ico">◷</span><span>Appointments</span></button>
+    <button data-page="assignments" title="Assignments"><span class="ico">▣</span><span>Assignments</span></button>
+    <button data-page="updates" title="Updates & Announcements"><span class="ico">!</span><span>Updates & Announcements</span></button>
+    <button data-page="feedback" title="Student Voice"><span class="ico">♡</span><span>Student Voice</span></button>
+  </nav>
+  <div class="rolebox"><label for="role">DEMO ROLE</label><select id="role" data-role-select><option>Student</option><option>Professor</option><option>Page Manager</option></select><button class="reset" data-act="resetDemo">Reset demo data</button></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="search" id="searchBox"><span>⌕</span><input id="search" placeholder="Search UniConnect..." aria-label="Search" autocomplete="off"><button class="clear-search" data-act="clearSearch" aria-label="Clear search">✕</button></div>
+  <select class="role-mobile" id="roleMobile" data-role-select aria-label="Demo role"><option>Student</option><option>Professor</option><option>Page Manager</option></select>
+  <div class="profile"><div><b id="roleName">Yatan Singh</b><small id="roleSub">Student account</small></div><div class="avatar" id="profileAvatar">YS</div></div>
+</header>
+
+<!-- DASHBOARD -->
+<section class="module active" id="page-dashboard">
+ <div class="hero"><div><h2 id="greeting">Hello 👋</h2><p>Your campus at a glance. Track deadlines, appointments, notes, assignments and important announcements from one place.</p></div><button class="btn primary" data-go="updates">View latest updates</button></div>
+ <div id="searchResults"></div>
+ <div class="grid stats">
+   <button class="card stat" data-go="deadlines"><span class="label">Upcoming deadlines</span><div class="num" id="statDeadlines">0</div><span class="hint">Next 7 days</span></button>
+   <button class="card stat" data-go="appointments"><span class="label">Open appointments</span><div class="num" id="statSlots">0</div><span class="hint">Free faculty time slots</span></button>
+   <button class="card stat" data-go="notes"><span class="label">Notes available</span><div class="num" id="statNotes">0</div><span class="hint">Shared by professors</span></button>
+   <button class="card stat" data-go="assignments"><span class="label" id="statAssignmentsLabel">Pending assignments</span><div class="num" id="statAssignments">0</div><span class="hint" id="statAssignmentsHint">Need your attention</span></button>
+ </div>
+ <div class="grid two" style="margin-top:16px">
+   <div class="card"><div class="section-title"><h3>Important deadlines</h3><span>Personal tracker</span></div><div id="dashDeadlines"></div></div>
+   <div class="card"><div class="section-title"><h3>Upcoming appointments</h3><span>Faculty slots</span></div><div id="dashAppts"></div></div>
+ </div>
+ <div class="grid two" style="margin-top:16px">
+   <div class="card"><div class="section-title"><h3>New notes available</h3><span>Professor uploads</span></div><div id="dashNotes"></div></div>
+   <div class="card"><div class="section-title"><h3>Latest announcements</h3><span>Official updates</span></div><div id="dashUpdates"></div></div>
+ </div>
+</section>
+
+<!-- DEADLINES -->
+<section class="module" id="page-deadlines">
+ <div class="hero"><div><h2>Assignment Deadlines</h2><p>Keep your personal academic deadlines organized and visible on the dashboard.</p></div></div>
+ <form class="card" id="deadlineForm">
+  <div class="fields">
+   <div class="field"><label for="dTitle">ASSIGNMENT</label><input id="dTitle" required maxlength="120" placeholder="e.g. Data Structures Lab"></div>
+   <div class="field"><label for="dCourse">COURSE</label><input id="dCourse" maxlength="40" placeholder="e.g. CSE 201"></div>
+   <div class="field"><label for="dDate">DUE DATE</label><input id="dDate" type="date" required></div>
+  </div>
+  <button class="btn primary">Add deadline</button>
+ </form>
+ <div class="card"><div class="section-title"><h3>My deadlines</h3><span>Personal</span></div><div id="deadlineList"></div></div>
+</section>
+
+<!-- NOTES -->
+<section class="module" id="page-notes">
+ <div class="hero"><div><h2>Notes Exchange</h2><p>Browse professor-uploaded notes, download available files, or request a topic you need. Students cannot upload or edit notes here.</p></div></div>
+ <div class="notice">🔒 <strong>Student access:</strong> notes are read/download/request only. <strong>Professor access:</strong> professors can upload and remove course notes and fulfil student requests.</div>
+ <form class="card" id="noteForm" hidden>
+  <div class="fields">
+   <div class="field"><label for="nCourse">COURSE</label><input id="nCourse" required maxlength="40" placeholder="e.g. DBMS"></div>
+   <div class="field"><label for="nTitle">NOTE TITLE</label><input id="nTitle" required maxlength="120" placeholder="e.g. Normalization — Unit 3"></div>
+   <div class="field"><label for="nFile">NOTE FILE</label><input id="nFile" type="file" required accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip,.png,.jpg,.jpeg"><div class="help">Up to 10 MB</div></div>
+  </div>
+  <div class="field" style="margin-bottom:12px"><label for="nDesc">DESCRIPTION</label><textarea id="nDesc" maxlength="500" placeholder="Topics covered..."></textarea></div>
+  <button class="btn primary">Upload note</button>
+ </form>
+ <div class="card"><div class="section-title"><h3>Available notes</h3><span id="noteRoleHint"></span></div><div id="notesList"></div></div>
+ <div class="card" style="margin-top:16px"><div class="section-title"><h3 id="requestsTitle">My note requests</h3><button class="btn" id="requestBtn" data-act="openRequest">Request notes</button></div><div id="requestsList"></div></div>
+</section>
+
+<!-- APPOINTMENTS -->
+<section class="module" id="page-appointments">
+ <div class="hero"><div><h2>Faculty Appointments</h2><p>Choose a faculty member and see their available timings before booking an appointment.</p></div></div>
+ <div class="notice" id="apptNotice"></div>
+ <div class="prof-grid" id="profGrid"></div>
+ <div class="card" style="margin-top:16px"><div class="section-title"><h3 id="apptListTitle">My appointments</h3><span>Upcoming</span></div><div id="myAppts"></div></div>
+</section>
+
+<!-- ASSIGNMENTS -->
+<section class="module" id="page-assignments">
+ <div class="hero"><div><h2>Assignments</h2><p>Professors publish assignments, feedback and comments. Students download the brief and upload their completed work.</p></div></div>
+ <input type="file" id="assignmentFilePicker" hidden accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip,.png,.jpg,.jpeg">
+ <form class="card" id="assignmentForm" hidden>
+  <div class="fields">
+   <div class="field"><label for="asTitle">ASSIGNMENT TITLE</label><input id="asTitle" required maxlength="120" placeholder="e.g. Graph Algorithms"></div>
+   <div class="field"><label for="asCourse">COURSE</label><input id="asCourse" required maxlength="40" placeholder="e.g. CSE 201"></div>
+   <div class="field"><label for="asDue">DUE DATE</label><input id="asDue" type="date" required></div>
+  </div>
+  <div class="fields" style="grid-template-columns:1fr 2fr">
+   <div class="field"><label for="asFile">ASSIGNMENT FILE</label><input id="asFile" type="file" required accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.zip,.png,.jpg,.jpeg"><div class="help">Up to 10 MB</div></div>
+   <div class="field"><label for="asComments">INSTRUCTIONS (OPTIONAL)</label><textarea id="asComments" maxlength="500" style="min-height:62px" placeholder="e.g. Submit one PDF with all answers."></textarea></div>
+  </div>
+  <button class="btn primary">Upload &amp; Publish Assignment</button>
+ </form>
+ <div class="notice">🔒 <strong>Permissions:</strong> only professors can create assignments, add feedback or comments. Students can upload a completed assignment to an existing assignment.</div>
+ <div class="grid two" id="assignmentList"></div>
+</section>
+
+<!-- UPDATES -->
+<section class="module" id="page-updates">
+ <div class="hero"><div><h2>Updates & Announcements</h2><p>Official campus announcements from page managers and professors.</p></div></div>
+ <form class="card" id="updateForm" hidden>
+  <div class="fields">
+   <div class="field"><label for="uTitle">TITLE</label><input id="uTitle" required maxlength="120" placeholder="Important announcement"></div>
+   <div class="field"><label>POSTING AS</label><input id="uBy" disabled></div>
+   <div class="field"><label for="uDate">DATE</label><input id="uDate" type="date" required></div>
+  </div>
+  <div class="field" style="margin-bottom:12px"><label for="uText">ANNOUNCEMENT</label><textarea id="uText" required maxlength="1000" placeholder="Write the official update..."></textarea></div>
+  <button class="btn primary">Publish announcement</button>
+ </form>
+ <div class="notice" id="updateNotice" hidden>🔒 <strong>Student view:</strong> only page managers and professors can publish official announcements.</div>
+ <div class="grid" id="updatesList"></div>
+</section>
+
+<!-- FEEDBACK -->
+<section class="module" id="page-feedback">
+ <div class="hero"><div><h2>Student Voice</h2><p>Share feedback with the faculty or campus team. Your name is not displayed on the public feedback feed.</p></div></div>
+ <form class="card" id="feedbackForm">
+  <div class="fields"><div class="field"><label for="fCat">CATEGORY</label><select id="fCat"><option>Course content</option><option>Teaching / pace</option><option>Facilities</option><option>Campus services</option><option>Other</option></select></div></div>
+  <div class="field" style="margin-bottom:12px"><label for="fMsg">FEEDBACK</label><textarea id="fMsg" required maxlength="1000" placeholder="Write your feedback..."></textarea></div>
+  <button class="btn primary">Submit feedback</button>
+ </form>
+ <div class="card"><div class="section-title"><h3>Recent student voice</h3><span>Anonymous feed</span></div><div id="feedbackList"></div></div>
+</section>
+</main>
+</div>
+
+<!-- Reusable input modal (replaces prompt()) -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+ <form class="card" id="modalForm">
+  <div class="section-title"><h3 id="modalTitle">Request notes</h3><button type="button" class="btn" data-act="closeModal" aria-label="Close">✕</button></div>
+  <div class="field" style="margin-bottom:12px"><label for="modalInput" id="modalLabel">COURSE / TOPIC</label><input id="modalInput"><textarea id="modalTextarea" hidden></textarea></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn" data-act="closeModal">Cancel</button><button class="btn primary" id="modalSubmit">Send request</button></div>
+ </form>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   UniConnect — single-file campus toolkit demo.
+   Data lives in localStorage; uploaded files live in IndexedDB (which can
+   hold far more than localStorage's ~5 MB, so uploads don't silently fail).
+   ===================================================================== */
+const KEY = 'uniconnect-v3';
+const ROLE_KEY = 'uniconnect-role';
+const MAX_FILE = 10 * 1024 * 1024;
+const PEOPLE = {
+  'Student':      { name: 'Yatan Singh',      initials: 'YS' },
+  'Professor':    { name: 'Dr. Meera Shah',   initials: 'MS', facultyId: 'p1' },
+  'Page Manager': { name: 'UniConnect Admin', initials: 'UC' }
+};
+const $ = id => document.getElementById(id);
+
+/* ---------------- dates ---------------- */
+function isoDate(d) { const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; }
+function inDays(n) { const d = new Date(); d.setDate(d.getDate() + n); return isoDate(d); }
+function today() { return isoDate(new Date()); }
+function daysLeft(date) { const [y, m, d] = date.split('-').map(Number); return Math.round((new Date(y, m - 1, d) - new Date(new Date().toDateString())) / 86400000); }
+function dueText(date) { const n = daysLeft(date); return n < 0 ? `Overdue by ${-n} day${n === -1 ? '' : 's'}` : n === 0 ? 'Due today' : `${n} day${n === 1 ? '' : 's'} left`; }
+function fmtDate(date) { const [y, m, d] = date.split('-').map(Number); return new Date(y, m - 1, d).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }); }
+function fmtSize(b) { return b == null ? '' : b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : (b / 1048576).toFixed(1) + ' MB'; }
+const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+/* ---------------- seed data (dates relative to today so the demo never looks stale) ---------------- */
+function seed() {
+  return {
+    deadlines: [
+      { id: 'd1', title: 'DSA Assignment 2', course: 'CSE 201', date: inDays(2) },
+      { id: 'd2', title: 'Database Systems Quiz', course: 'CSE 205', date: inDays(4) },
+      { id: 'd3', title: 'Mini Project Proposal', course: 'CSE 220', date: inDays(9) }
+    ],
+    notes: [
+      { id: 'n1', course: 'CSE 201', title: 'Data Structures — Unit 1 & 2', file: { name: 'DSA_Units_1_2.txt' }, desc: 'Arrays, linked lists, stacks and queues.', by: 'Dr. Meera Shah' },
+      { id: 'n2', course: 'CSE 205', title: 'DBMS — Normalization', file: { name: 'DBMS_Normalization.txt' }, desc: '1NF, 2NF, 3NF and BCNF with examples.', by: 'Prof. Rahul Mehta' },
+      { id: 'n3', course: 'CSE 210', title: 'Operating Systems — Processes', file: { name: 'OS_Processes.txt' }, desc: 'Process states, scheduling and context switching.', by: 'Dr. Ananya Rao' }
+    ],
+    requests: [{ id: 'r1', text: 'Computer Networks — Unit 4', status: 'Requested', by: 'Yatan Singh' }],
+    faculty: [
+      { id: 'p1', name: 'Dr. Meera Shah', dept: 'Computer Science', initials: 'MS', slots: [{ id: 's1', label: 'Mon · 10:00 AM' }, { id: 's2', label: 'Mon · 11:00 AM' }, { id: 's3', label: 'Wed · 2:00 PM' }] },
+      { id: 'p2', name: 'Prof. Rahul Mehta', dept: 'Computer Science', initials: 'RM', slots: [{ id: 's4', label: 'Tue · 11:30 AM' }, { id: 's5', label: 'Thu · 1:00 PM' }, { id: 's6', label: 'Fri · 10:00 AM' }] },
+      { id: 'p3', name: 'Dr. Ananya Rao', dept: 'Information Technology', initials: 'AR', slots: [{ id: 's7', label: 'Mon · 3:00 PM' }, { id: 's8', label: 'Wed · 11:30 AM' }, { id: 's9', label: 'Fri · 2:30 PM' }] }
+    ],
+    appointments: [],
+    assignments: [
+      { id: 'a1', title: 'Binary Trees Implementation', course: 'CSE 201', due: inDays(3), prof: 'Dr. Meera Shah', feedback: '', comments: 'Use clean function names and include complexity analysis.', file: { name: 'Binary_Trees_Assignment.txt' }, submission: null },
+      { id: 'a2', title: 'SQL Normalization Worksheet', course: 'CSE 205', due: inDays(6), prof: 'Prof. Rahul Mehta', feedback: '', comments: 'Submit one PDF with all answers.', file: { name: 'SQL_Normalization_Worksheet.txt' }, submission: null }
+    ],
+    updates: [
+      { id: 'u1', type: 'manager', by: 'Page Manager', title: 'Mid-semester academic calendar updated', text: 'Please check the latest schedule and keep track of revised academic dates.', date: inDays(-1) },
+      { id: 'u2', type: 'professor', by: 'Dr. Meera Shah', title: 'DSA doubt-solving session', text: 'An additional doubt-solving session is available this Wednesday at 2 PM.', date: inDays(-2) }
+    ],
+    feedback: []
+  };
+}
+/** Text used when a seeded (sample) file is downloaded — it was never uploaded, so we generate it. */
+function sampleFileText(kind, item) {
+  return kind === 'note'
+    ? `UniConnect — Course Notes\n\n${item.title}\nCourse: ${item.course}\nUploaded by: ${item.by}\n\n${item.desc}\n\n(This is a sample file. Professors can upload real files from the Notes Exchange.)\n`
+    : `UniConnect — Assignment Brief\n\n${item.title}\nCourse: ${item.course}\nProfessor: ${item.prof}\nDue: ${fmtDate(item.due)}\n\nInstructions: ${item.comments || 'See class discussion.'}\n\n(This is a sample file. Professors can upload real assignment files.)\n`;
+}
+
+/* ---------------- state & persistence ---------------- */
+let db = load();
+let role = PEOPLE[localStorage.getItem(ROLE_KEY)] ? localStorage.getItem(ROLE_KEY) : 'Student';
+let currentPage = 'dashboard';
+let query = '';
+
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY));
+    if (d && Array.isArray(d.notes) && Array.isArray(d.faculty)) return d;
+  } catch (e) { /* fall through to seed */ }
+  return seed();
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(db)); return true; }
+  catch (e) { toast('Could not save — browser storage is full or disabled', true); return false; }
+}
+
+/* ---------------- file storage (IndexedDB) ---------------- */
+const files = {
+  _db: null,
+  open() {
+    if (!this._db) this._db = new Promise((resolve, reject) => {
+      const req = indexedDB.open('uniconnect-files', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('files');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    return this._db;
+  },
+  async tx(mode, fn) {
+    const d = await this.open();
+    return new Promise((resolve, reject) => {
+      const t = d.transaction('files', mode); let result;
+      const r = fn(t.objectStore('files'));
+      if (r) r.onsuccess = () => { result = r.result; };
+      t.oncomplete = () => resolve(result);
+      t.onerror = () => reject(t.error);
+      t.onabort = () => reject(t.error);
+    });
+  },
+  put(id, file) { return this.tx('readwrite', s => s.put(file, id)); },
+  get(id) { return this.tx('readonly', s => s.get(id)); },
+  del(id) { return id ? this.tx('readwrite', s => s.delete(id)).catch(() => {}) : Promise.resolve(); },
+  clear() { return this.tx('readwrite', s => s.clear()).catch(() => {}); }
+};
+
+/** Validates and stores an uploaded File; returns metadata to keep in db, or null. */
+async function storeUpload(file) {
+  if (!file) { toast('Please choose a file', true); return null; }
+  if (file.size > MAX_FILE) { toast(`"${file.name}" is ${fmtSize(file.size)} — the limit is 10 MB`, true); return null; }
+  const meta = { id: uid('f'), name: file.name, size: file.size, type: file.type };
+  try { await files.put(meta.id, file); return meta; }
+  catch (e) { toast('Could not store the file — browser storage may be full', true); return null; }
+}
+
+async function downloadFile(meta, fallbackText) {
+  let blob = null, name = meta?.name || 'download.txt';
+  if (meta?.id) { try { blob = await files.get(meta.id); } catch (e) { blob = null; } }
+  if (!blob && fallbackText != null) blob = new Blob([fallbackText], { type: 'text/plain' });
+  if (!blob) { toast('This file is no longer available in this browser', true); return; }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000); // revoking immediately can cancel the download
+  toast(`Downloading ${name}`);
+}
+
+/* ---------------- ui helpers ---------------- */
+function toast(s, isError) {
+  const t = $('toast'); t.textContent = s; t.classList.toggle('error', !!isError); t.classList.add('show');
+  clearTimeout(window.__toast); window.__toast = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+/** Escapes text and highlights the current search query. */
+function hl(s) {
+  const e = esc(s);
+  if (!query) return e;
+  const q = esc(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return e.replace(new RegExp(q, 'gi'), m => `<mark>${m}</mark>`);
+}
+function matches(...fields) { return !query || fields.some(f => String(f ?? '').toLowerCase().includes(query.toLowerCase())); }
+const empty = msg => `<div class="empty">${esc(msg)}</div>`;
+const noMatch = list => query ? empty(`Nothing matches "${query}".`) : list;
+const me = () => PEOPLE[role];
+
+let modalHandler = null;
+function openModal({ title, label, value = '', placeholder = '', submit = 'Save', multiline = false, onSubmit }) {
+  $('modalTitle').textContent = title; $('modalLabel').textContent = label; $('modalSubmit').textContent = submit;
+  const input = $('modalInput'), area = $('modalTextarea');
+  input.hidden = multiline; area.hidden = !multiline;
+  const field = multiline ? area : input;
+  $('modalLabel').htmlFor = field.id;
+  field.value = value; field.placeholder = placeholder;
+  modalHandler = onSubmit;
+  $('modal').classList.add('show');
+  setTimeout(() => field.focus(), 30);
+}
+function closeModal() { $('modal').classList.remove('show'); modalHandler = null; }
+$('modalForm').onsubmit = e => {
+  e.preventDefault();
+  const field = $('modalTextarea').hidden ? $('modalInput') : $('modalTextarea');
+  const fn = modalHandler; closeModal();
+  if (fn) fn(field.value.trim());
+};
+$('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('modal').classList.contains('show')) closeModal(); });
+
+/* ---------------- navigation, role, search ---------------- */
+function go(page) {
+  currentPage = page;
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.querySelectorAll('.module').forEach(m => m.classList.toggle('active', m.id === 'page-' + page));
+  if (location.hash !== '#' + page) history.replaceState(null, '', '#' + page);
+  renderAll(); window.scrollTo(0, 0);
+}
+function setRole(r) {
+  role = r; localStorage.setItem(ROLE_KEY, r);
+  document.querySelectorAll('[data-role-select]').forEach(s => { s.value = r; });
+  $('roleName').textContent = me().name; $('roleSub').textContent = r + ' account'; $('profileAvatar').textContent = me().initials;
+  renderAll();
+}
+document.querySelectorAll('[data-role-select]').forEach(s => s.addEventListener('change', e => { setRole(e.target.value); toast(e.target.value + ' mode enabled'); }));
+$('search').addEventListener('input', e => { query = e.target.value.trim(); $('searchBox').classList.toggle('has-q', !!query); renderAll(); });
+
+/* ---------------- dashboard ---------------- */
+function renderDashboard() {
+  const h = new Date().getHours();
+  const first = me().name.split(' ')[0];
+  $('greeting').textContent = `${h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'}, ${/^(Dr|Prof)\.?$/.test(first) ? me().name : first} 👋`;
+  $('statDeadlines').textContent = db.deadlines.filter(x => daysLeft(x.date) >= 0 && daysLeft(x.date) <= 7).length;
+  $('statSlots').textContent = db.faculty.reduce((n, p) => n + p.slots.filter(s => !s.bookedBy).length, 0);
+  $('statNotes').textContent = db.notes.length;
+  if (role === 'Student') {
+    $('statAssignmentsLabel').textContent = 'Pending assignments'; $('statAssignmentsHint').textContent = 'Need your attention';
+    $('statAssignments').textContent = db.assignments.filter(a => !a.submission).length;
+  } else {
+    $('statAssignmentsLabel').textContent = 'Submissions received'; $('statAssignmentsHint').textContent = 'Ready to review';
+    $('statAssignments').textContent = db.assignments.filter(a => a.submission).length;
+  }
+  const d = [...db.deadlines].filter(x => daysLeft(x.date) >= 0).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
+  $('dashDeadlines').innerHTML = d.length ? d.map(x => `<div class="item"><div><h4>${esc(x.title)}</h4><p><span class="tag yellow">${esc(x.course || 'Course')}</span>Due ${fmtDate(x.date)} · ${dueText(x.date)}</p></div></div>`).join('') : empty('No upcoming deadlines.');
+  const ap = db.appointments.slice(-4).reverse();
+  $('dashAppts').innerHTML = ap.length ? ap.map(x => `<div class="item"><div><h4>${esc(x.faculty)}</h4><p><span class="tag blue">${esc(x.slot)}</span>${esc(x.reason || 'Academic discussion')}</p></div></div>`).join('') : empty('No appointments booked yet.');
+  $('dashNotes').innerHTML = db.notes.length ? db.notes.slice(-3).reverse().map(x => `<div class="item"><div><h4>${esc(x.title)}</h4><p><span class="tag green">${esc(x.course)}</span>${esc(x.by)}</p></div><div class="actions"><button class="btn success" data-act="downloadNote" data-id="${x.id}">Download</button></div></div>`).join('') : empty('No notes yet.');
+  $('dashUpdates').innerHTML = db.updates.length ? [...db.updates].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3).map(x => `<div class="item"><div><h4>${esc(x.title)}</h4><p><span class="tag ${x.type === 'manager' ? 'yellow' : 'blue'}">${esc(x.by)}</span>${fmtDate(x.date)}</p></div></div>`).join('') : empty('No announcements yet.');
+  renderSearchResults();
+}
+
+function renderSearchResults() {
+  if (!query) { $('searchResults').innerHTML = ''; return; }
+  const groups = [
+    ['deadlines', 'Deadline', db.deadlines.filter(x => matches(x.title, x.course)).map(x => [x.title, x.course])],
+    ['notes', 'Note', db.notes.filter(x => matches(x.title, x.course, x.desc, x.by)).map(x => [x.title, x.course])],
+    ['assignments', 'Assignment', db.assignments.filter(x => matches(x.title, x.course, x.prof)).map(x => [x.title, x.course])],
+    ['appointments', 'Faculty', db.faculty.filter(x => matches(x.name, x.dept)).map(x => [x.name, x.dept])],
+    ['updates', 'Announcement', db.updates.filter(x => matches(x.title, x.text, x.by)).map(x => [x.title, x.by])],
+    ['feedback', 'Feedback', db.feedback.filter(x => matches(x.cat, x.msg)).map(x => [x.msg, x.cat])]
+  ];
+  const rows = groups.flatMap(([page, label, items]) => items.map(([t, sub]) => `<div class="item"><div><h4>${hl(t)}</h4><p><span class="tag purple">${label}</span>${esc(sub || '')}</p></div><div class="actions"><button class="btn" data-go="${page}">Open</button></div></div>`));
+  $('searchResults').innerHTML = `<div class="card" style="margin-bottom:16px"><div class="section-title"><h3>Search results for “${esc(query)}”</h3><span>${rows.length} found</span></div>${rows.join('') || empty('Nothing found.')}</div>`;
+}
+
+/* ---------------- deadlines ---------------- */
+$('deadlineForm').onsubmit = e => {
+  e.preventDefault();
+  db.deadlines.push({ id: uid('d'), title: $('dTitle').value.trim(), course: $('dCourse').value.trim(), date: $('dDate').value });
+  if (save()) { e.target.reset(); renderAll(); toast('Deadline added'); }
+};
+function renderDeadlines() {
+  const arr = [...db.deadlines].sort((a, b) => a.date.localeCompare(b.date)).filter(x => matches(x.title, x.course));
+  $('deadlineList').innerHTML = arr.length ? arr.map(x => {
+    const n = daysLeft(x.date);
+    return `<div class="item"><div><h4>${hl(x.title)}</h4><p><span class="tag ${n < 0 ? 'red' : 'yellow'}">${hl(x.course || 'Course')}</span>Due ${fmtDate(x.date)} · ${dueText(x.date)}</p></div><div class="actions"><button class="btn danger" data-act="removeDeadline" data-id="${x.id}">Delete</button></div></div>`;
+  }).join('') : noMatch(empty('No deadlines yet. Add one above.'));
+}
+
+/* ---------------- notes ---------------- */
+$('noteForm').onsubmit = async e => {
+  e.preventDefault();
+  if (role !== 'Professor') return;
+  const btn = e.submitter; if (btn) btn.disabled = true;
+  const meta = await storeUpload($('nFile').files[0]);
+  if (btn) btn.disabled = false;
+  if (!meta) return;
+  db.notes.push({ id: uid('n'), course: $('nCourse').value.trim(), title: $('nTitle').value.trim(), file: meta, desc: $('nDesc').value.trim(), by: me().name });
+  if (save()) { e.target.reset(); renderAll(); toast('Note uploaded for students'); }
+};
+function renderNotes() {
+  const professor = role === 'Professor', student = role === 'Student';
+  $('noteForm').hidden = !professor;
+  $('noteRoleHint').textContent = professor ? 'Professor upload controls enabled' : 'View / download / request only';
+  const notes = db.notes.slice().reverse().filter(n => matches(n.title, n.course, n.desc, n.by, n.file?.name));
+  $('notesList').innerHTML = notes.length ? notes.map(n => `<div class="item"><div><h4><span class="tag green">${hl(n.course)}</span>${hl(n.title)}</h4><p>${hl(n.desc || 'No description')} · Uploaded by ${hl(n.by)}</p><p style="margin-top:7px"><span class="tag">${esc(n.file?.name || 'file')}${n.file?.size ? ' · ' + fmtSize(n.file.size) : ''}</span></p></div><div class="actions"><button class="btn success" data-act="downloadNote" data-id="${n.id}">Download</button>${student ? `<button class="btn" data-act="requestRelated" data-id="${n.id}">Request more</button>` : ''}${professor ? `<button class="btn danger" data-act="removeNote" data-id="${n.id}">Remove</button>` : ''}</div></div>`).join('') : noMatch(empty('No notes available yet.'));
+
+  $('requestsTitle').textContent = student ? 'My note requests' : 'Student note requests';
+  $('requestBtn').hidden = !student;
+  const reqs = db.requests.slice().reverse().filter(r => matches(r.text));
+  $('requestsList').innerHTML = reqs.length ? reqs.map(r => `<div class="item"><div><h4>${hl(r.text)}</h4><p><span class="tag ${r.status === 'Fulfilled' ? 'green' : 'purple'}">${esc(r.status)}</span>${student ? 'Note request' : 'Requested by ' + esc(r.by)}</p></div><div class="actions">${professor && r.status !== 'Fulfilled' ? `<button class="btn success" data-act="fulfilRequest" data-id="${r.id}">Mark fulfilled</button>` : ''}${student ? `<button class="btn danger" data-act="removeRequest" data-id="${r.id}">Withdraw</button>` : ''}</div></div>`).join('') : noMatch(empty('No requests yet.'));
+}
+function openRequest(prefill = '') {
+  if (role !== 'Student') { toast('Note requests are a student feature'); return; }
+  openModal({ title: 'Request notes', label: 'COURSE / TOPIC', value: prefill, placeholder: 'e.g. Operating Systems Unit 4', submit: 'Send request',
+    onSubmit: text => {
+      if (!text) { toast('Enter a course or topic', true); return; }
+      db.requests.push({ id: uid('r'), text, status: 'Requested', by: me().name });
+      if (save()) { renderAll(); toast('Note request sent'); }
+    } });
+}
+
+/* ---------------- appointments ---------------- */
+function renderAppointments() {
+  const student = role === 'Student', professor = role === 'Professor';
+  $('apptNotice').innerHTML = student ? '🗓 <strong>Click a green time slot</strong> to book it. Booked slots turn red; cancelling frees the slot again.'
+    : professor ? '🗓 <strong>Professor view:</strong> add new time slots to your card and see who has booked you.' : '🗓 <strong>Read-only:</strong> switch to Student mode to book an appointment.';
+  const fac = db.faculty.filter(p => matches(p.name, p.dept));
+  $('profGrid').innerHTML = fac.length ? fac.map(p => `<div class="prof"><div class="avatar">${esc(p.initials)}</div><h4>${hl(p.name)}</h4><small>${hl(p.dept)}</small><div class="clear"></div>
+    <div class="slots">${p.slots.length ? p.slots.map(s => `<button class="slot ${s.bookedBy ? 'booked' : ''}" ${s.bookedBy || !student ? 'disabled' : ''} data-act="bookSlot" data-id="${p.id}" data-slot="${s.id}" title="${s.bookedBy ? 'Already booked' : student ? 'Book this slot' : ''}">${esc(s.label)}${s.bookedBy ? ' · Booked' : ''}</button>`).join('') : '<span style="color:var(--muted);font-size:11px">No slots published.</span>'}</div>
+    ${professor && p.id === me().facultyId ? `<form class="slot-form" data-slot-form="${p.id}"><input placeholder="e.g. Thu · 4:00 PM" maxlength="30" required aria-label="New slot"><button class="btn primary">Add slot</button></form>` : ''}
+  </div>`).join('') : noMatch(empty('No faculty found.'));
+  document.querySelectorAll('[data-slot-form]').forEach(f => f.onsubmit = e => {
+    e.preventDefault();
+    const p = db.faculty.find(x => x.id === f.dataset.slotForm), label = f.querySelector('input').value.trim();
+    if (!label) return;
+    p.slots.push({ id: uid('s'), label });
+    if (save()) { renderAll(); toast('Time slot added'); }
+  });
+  $('apptListTitle').textContent = student ? 'My appointments' : professor ? 'Appointments with you' : 'All appointments';
+  let list = db.appointments.slice().reverse();
+  if (professor) list = list.filter(a => a.facultyId === me().facultyId);
+  list = list.filter(a => matches(a.faculty, a.slot, a.reason));
+  $('myAppts').innerHTML = list.length ? list.map(a => `<div class="item"><div><h4>${hl(student ? a.faculty : a.student + ' → ' + a.faculty)}</h4><p><span class="tag blue">${esc(a.slot)}</span>${hl(a.reason || 'Academic appointment')}</p></div><div class="actions">${student || professor ? `<button class="btn danger" data-act="cancelAppt" data-id="${a.id}">Cancel</button>` : ''}</div></div>`).join('') : noMatch(empty('No appointments booked yet.'));
+}
+function bookSlot(pid, sid) {
+  if (role !== 'Student') { toast('Switch to Student mode to book an appointment'); return; }
+  const p = db.faculty.find(x => x.id === pid), s = p?.slots.find(x => x.id === sid);
+  if (!s || s.bookedBy) { toast('That slot is no longer available', true); renderAll(); return; }
+  openModal({ title: `Book ${p.name}`, label: `REASON FOR ${s.label.toUpperCase()} (OPTIONAL)`, value: 'Academic discussion', submit: 'Book appointment',
+    onSubmit: reason => {
+      if (s.bookedBy) { toast('That slot was just booked', true); return; }
+      const id = uid('ap');
+      db.appointments.push({ id, facultyId: p.id, slotId: s.id, faculty: p.name, slot: s.label, reason, student: me().name });
+      s.bookedBy = id;
+      if (save()) { renderAll(); toast(`Appointment booked with ${p.name}`); }
+    } });
+}
+function cancelAppt(id) {
+  const a = db.appointments.find(x => x.id === id); if (!a) return;
+  const slot = db.faculty.find(p => p.id === a.facultyId)?.slots.find(s => s.id === a.slotId);
+  if (slot) delete slot.bookedBy; // free the slot again
+  db.appointments = db.appointments.filter(x => x.id !== id);
+  if (save()) { renderAll(); toast('Appointment cancelled — slot is open again'); }
+}
+
+/* ---------------- assignments ---------------- */
+$('assignmentForm').onsubmit = async e => {
+  e.preventDefault();
+  if (role !== 'Professor') return;
+  const btn = e.submitter; if (btn) btn.disabled = true;
+  const meta = await storeUpload($('asFile').files[0]);
+  if (btn) btn.disabled = false;
+  if (!meta) return;
+  db.assignments.push({ id: uid('a'), title: $('asTitle').value.trim(), course: $('asCourse').value.trim(), due: $('asDue').value, prof: me().name, feedback: '', comments: $('asComments').value.trim(), file: meta, submission: null });
+  if (save()) { e.target.reset(); renderAll(); toast('Assignment uploaded and published'); }
+};
+function renderAssignments() {
+  const prof = role === 'Professor', student = role === 'Student';
+  $('assignmentForm').hidden = !prof;
+  const list = db.assignments.slice().reverse().filter(a => matches(a.title, a.course, a.prof, a.comments));
+  $('assignmentList').innerHTML = list.length ? list.map(a => {
+    const sub = a.submission, late = !sub && daysLeft(a.due) < 0;
+    const status = sub ? ['green', 'Submitted'] : late ? ['red', 'Overdue'] : ['yellow', 'Pending'];
+    return `<div class="card assignment">
+<span class="status tag ${status[0]}">${status[1]}</span>
+<h4 style="margin:0 0 6px">${hl(a.title)}</h4>
+<p style="color:var(--muted);font-size:11px;margin:0"><span class="tag blue">${hl(a.course)}</span>Due ${fmtDate(a.due)} · ${esc(a.prof)}${sub ? '' : ' · ' + dueText(a.due)}</p>
+<div class="filebox"><div><b>Assignment file</b><p>${esc(a.file?.name || 'No file attached')}${a.file?.size ? ' · ' + fmtSize(a.file.size) : ''}</p></div>${a.file ? `<button class="btn success" data-act="downloadAssignment" data-id="${a.id}">Download</button>` : ''}</div>
+${sub ? `<div class="filebox"><div><b style="color:var(--success)">✓ Completed work</b><p>${esc(sub.name)} · ${fmtSize(sub.size)} · submitted ${new Date(sub.at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}</p></div><button class="btn" data-act="downloadSubmission" data-id="${a.id}">Download</button></div>` : ''}
+<div style="margin-top:14px">
+<b style="font-size:11px">Professor comments</b>
+<p style="color:var(--muted);font-size:11px;margin-top:6px">${esc(a.comments || 'No comments yet.')}</p>
+<b style="font-size:11px;display:block;margin-top:12px">Feedback</b>
+<p style="color:var(--muted);font-size:11px;margin-top:6px">${esc(a.feedback || (sub ? 'Awaiting review.' : 'Feedback will appear here after review.'))}</p>
+</div>
+<div style="margin-top:15px;display:flex;gap:7px;flex-wrap:wrap">
+${student ? `<button class="btn primary" data-act="uploadCompleted" data-id="${a.id}">${sub ? 'Replace submission' : 'Upload completed assignment'}</button>` : ''}
+${student && sub ? `<button class="btn danger" data-act="removeSubmission" data-id="${a.id}">Remove submission</button>` : ''}
+${prof ? `<button class="btn" data-act="addComment" data-id="${a.id}">${a.comments ? 'Edit' : 'Add'} comment</button><button class="btn success" data-act="addFeedback" data-id="${a.id}" ${sub ? '' : 'title="No submission yet"'}>${a.feedback ? 'Edit' : 'Add'} feedback</button><button class="btn danger" data-act="deleteAssignment" data-id="${a.id}">Delete</button>` : ''}
+</div></div>`;
+  }).join('') : `<div class="card">${noMatch(empty('No assignments published yet.'))}</div>`;
+}
+let pendingSubmissionId = null;
+$('assignmentFilePicker').addEventListener('change', async () => {
+  const picker = $('assignmentFilePicker'), file = picker.files[0], id = pendingSubmissionId;
+  pendingSubmissionId = null;
+  if (!file || !id) return;
+  const meta = await storeUpload(file);
+  if (!meta) return;
+  const a = db.assignments.find(x => x.id === id);
+  if (!a) { files.del(meta.id); return; }
+  const old = a.submission;
+  a.submission = { ...meta, at: new Date().toISOString() };
+  if (save()) { if (old) files.del(old.id); renderAll(); toast(`Uploaded ${file.name}`); }
+  else { a.submission = old; files.del(meta.id); }
+});
+function uploadCompleted(id) {
+  if (role !== 'Student') { toast('Only students can upload completed assignments'); return; }
+  pendingSubmissionId = id;
+  const picker = $('assignmentFilePicker'); picker.value = ''; picker.click();
+}
+
+/* ---------------- updates ---------------- */
+$('updateForm').onsubmit = e => {
+  e.preventDefault();
+  if (role === 'Student') return;
+  db.updates.push({ id: uid('u'), type: role === 'Page Manager' ? 'manager' : 'professor', by: role === 'Page Manager' ? 'Page Manager' : me().name, author: role, title: $('uTitle').value.trim(), text: $('uText').value.trim(), date: $('uDate').value });
+  if (save()) { e.target.reset(); $('uDate').value = today(); renderAll(); toast('Official announcement published'); }
+};
+function renderUpdates() {
+  const canPost = role === 'Professor' || role === 'Page Manager';
+  $('updateForm').hidden = !canPost; $('updateNotice').hidden = canPost;
+  $('uBy').value = role === 'Page Manager' ? 'Page Manager' : me().name;
+  if (!$('uDate').value) $('uDate').value = today();
+  const list = [...db.updates].sort((a, b) => b.date.localeCompare(a.date)).filter(u => matches(u.title, u.text, u.by));
+  $('updatesList').innerHTML = list.length ? list.map(u => {
+    const mine = (role === 'Page Manager' && u.type === 'manager') || (role === 'Professor' && u.by === me().name);
+    return `<div class="card update ${u.type}"><div class="section-title"><h3>${hl(u.title)}</h3><span>${fmtDate(u.date)}</span></div><p style="font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap">${hl(u.text)}</p><div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;gap:8px"><p style="margin:0;font-size:10px;color:var(--muted)"><span class="tag ${u.type === 'manager' ? 'yellow' : 'blue'}">${esc(u.by)}</span>Official announcement</p>${mine ? `<button class="btn danger" data-act="deleteUpdate" data-id="${u.id}">Delete</button>` : ''}</div></div>`;
+  }).join('') : `<div class="card">${noMatch(empty('No announcements yet.'))}</div>`;
+}
+
+/* ---------------- feedback ---------------- */
+$('feedbackForm').onsubmit = e => {
+  e.preventDefault();
+  db.feedback.push({ id: uid('f'), cat: $('fCat').value, msg: $('fMsg').value.trim(), date: today() });
+  if (save()) { e.target.reset(); renderAll(); toast('Anonymous feedback submitted'); }
+};
+function renderFeedback() {
+  const list = db.feedback.slice().reverse().filter(f => matches(f.cat, f.msg));
+  $('feedbackList').innerHTML = list.length ? list.map(f => `<div class="item"><div><h4><span class="tag purple">${esc(f.cat)}</span><span style="color:var(--muted);font-weight:400;font-size:10px">${f.date ? fmtDate(f.date) : ''}</span></h4><p style="white-space:pre-wrap">${hl(f.msg)}</p></div></div>`).join('') : noMatch(empty('No feedback submitted yet.'));
+}
+
+/* ---------------- actions (event delegation — no inline onclick, so any text is safe) ---------------- */
+const find = (arr, id) => db[arr].find(x => x.id === id);
+const ACTIONS = {
+  clearSearch() { $('search').value = ''; query = ''; $('searchBox').classList.remove('has-q'); renderAll(); },
+  closeModal,
+  openRequest: () => openRequest(),
+  requestRelated: id => openRequest(find('notes', id)?.title || ''),
+  removeDeadline(id) { db.deadlines = db.deadlines.filter(x => x.id !== id); if (save()) { renderAll(); toast('Deadline removed'); } },
+  downloadNote(id) { const n = find('notes', id); if (n) downloadFile(n.file, sampleFileText('note', n)); },
+  removeNote(id) {
+    const n = find('notes', id); if (!n || !confirm(`Remove "${n.title}" for all students?`)) return;
+    db.notes = db.notes.filter(x => x.id !== id); if (save()) { files.del(n.file?.id); renderAll(); toast('Note removed'); }
+  },
+  fulfilRequest(id) { const r = find('requests', id); if (r) { r.status = 'Fulfilled'; if (save()) { renderAll(); toast('Request marked as fulfilled'); } } },
+  removeRequest(id) { db.requests = db.requests.filter(x => x.id !== id); if (save()) { renderAll(); toast('Request withdrawn'); } },
+  bookSlot: (id, el) => bookSlot(id, el.dataset.slot),
+  cancelAppt,
+  downloadAssignment(id) { const a = find('assignments', id); if (a) downloadFile(a.file, sampleFileText('assignment', a)); },
+  downloadSubmission(id) { const a = find('assignments', id); if (a?.submission) downloadFile(a.submission); },
+  uploadCompleted,
+  removeSubmission(id) {
+    const a = find('assignments', id); if (!a?.submission || !confirm('Remove your submitted file?')) return;
+    const old = a.submission; a.submission = null; if (save()) { files.del(old.id); renderAll(); toast('Submission removed'); }
+  },
+  addComment(id) {
+    const a = find('assignments', id); if (!a) return;
+    openModal({ title: 'Professor comment', label: a.title.toUpperCase(), value: a.comments, multiline: true, submit: 'Save comment',
+      onSubmit: v => { a.comments = v; if (save()) { renderAll(); toast('Comment saved'); } } });
+  },
+  addFeedback(id) {
+    const a = find('assignments', id); if (!a) return;
+    openModal({ title: 'Feedback', label: a.title.toUpperCase(), value: a.feedback, multiline: true, submit: 'Save feedback',
+      onSubmit: v => { a.feedback = v; if (save()) { renderAll(); toast('Feedback added'); } } });
+  },
+  deleteAssignment(id) {
+    const a = find('assignments', id); if (!a || !confirm(`Delete "${a.title}" and any submission?`)) return;
+    db.assignments = db.assignments.filter(x => x.id !== id);
+    if (save()) { files.del(a.file?.id); files.del(a.submission?.id); renderAll(); toast('Assignment deleted'); }
+  },
+  deleteUpdate(id) { if (!confirm('Delete this announcement?')) return; db.updates = db.updates.filter(x => x.id !== id); if (save()) { renderAll(); toast('Announcement deleted'); } },
+  async resetDemo() {
+    if (!confirm('Reset all demo data? Uploaded files, deadlines and bookings will be removed.')) return;
+    await files.clear(); db = seed(); save(); renderAll(); toast('Demo data reset');
+  }
+};
+document.addEventListener('click', e => {
+  const goBtn = e.target.closest('[data-go]');
+  if (goBtn) { go(goBtn.dataset.go); return; }
+  const navBtn = e.target.closest('#nav button[data-page]');
+  if (navBtn) { go(navBtn.dataset.page); return; }
+  const el = e.target.closest('[data-act]');
+  if (el && ACTIONS[el.dataset.act] && !el.disabled) { e.preventDefault(); ACTIONS[el.dataset.act](el.dataset.id, el); }
+});
+
+/* ---------------- boot ---------------- */
+function renderAll() { renderDashboard(); renderDeadlines(); renderNotes(); renderAppointments(); renderAssignments(); renderUpdates(); renderFeedback(); }
+window.addEventListener('storage', e => { if (e.key === KEY) { db = load(); renderAll(); } }); // keep multiple tabs in sync
+setRole(role);
+const startPage = location.hash.slice(1);
+go(document.getElementById('page-' + startPage) ? startPage : 'dashboard');
+files.open().catch(() => toast('File storage is unavailable in this browser — uploads will not work', true));
+</script>
+</body>
+</html>
