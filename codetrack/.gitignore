@@ -1,0 +1,7 @@
+target/
+codetrack/data/
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.iml

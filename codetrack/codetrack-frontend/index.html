@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CodeTrack — all your coding progress in one place</title>
+  <meta name="description" content="Connect LeetCode, GeeksforGeeks, CodeChef, Codeforces and GitHub and track your coding progress in one dashboard." />
+  <meta name="theme-color" content="#0c0a13" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%238b5cf6'/%3E%3Cpath d='M12 10l-6 6 6 6M20 10l6 6-6 6' stroke='white' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+</head>
+<body class="booting">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============================== AUTH VIEW ============================== -->
+  <section id="auth-view" class="auth" hidden>
+    <div class="auth-hero">
+      <div class="logo logo-lg">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>CodeTrack</span>
+      </div>
+      <h1>All your coding progress.<br /><span class="grad">One dashboard.</span></h1>
+      <p class="muted">Connect LeetCode, GeeksforGeeks, CodeChef, Codeforces and GitHub. Track solved problems, ratings and contests — and share a public portfolio with colleges and recruiters.</p>
+      <ul class="auth-platforms" id="auth-platforms" aria-label="Supported platforms"></ul>
+    </div>
+
+    <div class="auth-card card">
+      <div class="tabs" role="tablist" aria-label="Sign in or create an account">
+        <button type="button" class="tab auth-tab" role="tab" id="tab-login" data-tab="login" aria-controls="login-form" aria-selected="true">Log in</button>
+        <button type="button" class="tab auth-tab" role="tab" id="tab-register" data-tab="register" aria-controls="register-form" aria-selected="false">Register</button>
+      </div>
+
+      <!-- Login -->
+      <form id="login-form" class="form" role="tabpanel" aria-labelledby="tab-login" novalidate>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" autocomplete="email" required />
+          <p class="field-error" data-for="email"></p>
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required />
+          <p class="field-error" data-for="password"></p>
+        </div>
+        <p class="form-error" id="login-error" role="alert"></p>
+        <button type="submit" class="btn btn-primary btn-block" id="login-submit">Log in</button>
+        <p class="muted small center">New here? <button type="button" class="link-btn" data-switch-tab="register">Create an account</button></p>
+      </form>
+
+      <!-- Register -->
+      <form id="register-form" class="form" role="tabpanel" aria-labelledby="tab-register" novalidate hidden>
+        <div class="field">
+          <label for="reg-name">Full name</label>
+          <input id="reg-name" name="name" type="text" autocomplete="name" required maxlength="100" />
+          <p class="field-error" data-for="name"></p>
+        </div>
+        <div class="field">
+          <label for="reg-email">Email</label>
+          <input id="reg-email" name="email" type="email" autocomplete="email" required />
+          <p class="field-error" data-for="email"></p>
+        </div>
+        <div class="field">
+          <label for="reg-password">Password</label>
+          <input id="reg-password" name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="72" aria-describedby="reg-password-hint" />
+          <p class="hint" id="reg-password-hint">At least 8 characters.</p>
+          <p class="field-error" data-for="password"></p>
+        </div>
+        <div class="field">
+          <label for="reg-college">College <span class="optional">(optional)</span></label>
+          <input id="reg-college" name="college" type="text" autocomplete="organization" maxlength="150" />
+          <p class="field-error" data-for="college"></p>
+        </div>
+        <div class="field">
+          <label for="reg-role">Account type</label>
+          <select id="reg-role" name="role">
+            <option value="STUDENT">Student</option>
+            <option value="COLLEGE">College</option>
+            <option value="RECRUITER">Recruiter</option>
+          </select>
+          <p class="field-error" data-for="role"></p>
+        </div>
+        <p class="form-error" id="register-error" role="alert"></p>
+        <button type="submit" class="btn btn-primary btn-block" id="register-submit">Create account</button>
+        <p class="muted small center">Already have an account? <button type="button" class="link-btn" data-switch-tab="login">Log in</button></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================== APP SHELL ============================== -->
+  <div id="app" class="app" hidden>
+    <!-- Mobile top bar (signed in) -->
+    <header class="topbar" id="topbar">
+      <button type="button" class="icon-btn" id="menu-toggle" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <a class="logo" href="#/" aria-label="CodeTrack home">
+        <span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span>CodeTrack</span>
+      </a>
+      <span class="topbar-spacer"></span>
+    </header>
+
+    <!-- Guest header (public profile without login) -->
+    <header class="guest-header" id="guest-header">
+      <a class="logo" href="#/login" aria-label="CodeTrack">
+        <span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span>CodeTrack</span>
+      </a>
+      <a class="btn btn-primary btn-sm" href="#/login">Sign in</a>
+    </header>
+
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <a class="logo sidebar-logo" href="#/" aria-label="CodeTrack home">
+        <span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span>CodeTrack</span>
+      </a>
+      <nav>
+        <ul class="nav" id="nav"></ul>
+      </nav>
+      <div class="sidebar-user">
+        <div class="avatar" id="user-avatar" aria-hidden="true"></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-name"></div>
+          <span class="role-badge" id="user-role"></span>
+        </div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-block" id="logout-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3M10 17l-5-5 5-5M5 12h11" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Logout
+      </button>
+    </aside>
+
+    <main class="main" id="main" tabindex="-1">
+      <div class="view" id="view" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <!-- Overlays -->
+  <div id="modal-root"></div>
+  <div id="toast-root" class="toasts" aria-live="polite" aria-atomic="false"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+.DS_Store
+*.log
+*.tmp
+.vscode/
+.idea/
+target/
+codetrack/codetrack/data/
+infinite-tower/.godot/
+infinite-tower/android/

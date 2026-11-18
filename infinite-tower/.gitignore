@@ -1,0 +1,14 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Temporary files
+.DS_Store
+*.tmp
+*.log
+
+# Local editor settings
+.vscode/
+# Generated Qwen review reports
+tools/ai_reviewer/review_report.md
+tools/ai_reviewer/review_report_backup.md

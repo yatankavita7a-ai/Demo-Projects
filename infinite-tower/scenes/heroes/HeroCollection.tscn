@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://c37vuaxql16ka"]
+
+[ext_resource type="Script" uid="uid://dq45eih0513m4" path="res://scripts/heroes/HeroCollection.gd" id="1_hlebs"]
+
+[node name="HeroCollection" type="Control" unique_id=1967377457]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_hlebs")
